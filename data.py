@@ -57,7 +57,7 @@ def convert_ag_news_csv(input_file, vocab, char_vocab, update_vocab):
     return processed_data
 
 
-def get_batch(sentences, batch_size, num_steps, max_word_length):
+def get_batch(sentences, batch_size, num_steps, max_word_length, device):
 
     n_batches = int(len(sentences) / batch_size)
 
@@ -91,9 +91,9 @@ def get_batch(sentences, batch_size, num_steps, max_word_length):
 
                 targets[i, tok_pos] = sentences_t[i][0][tok_pos + 1]
 
-            yield {'token_ids': torch.LongTensor(inputs),
-                   'token_characters': torch.LongTensor(char_inputs),
-                   'next_token_ids': torch.LongTensor(targets)}
+            yield {'token_ids': torch.LongTensor(inputs).to(device),
+                   'token_characters': torch.LongTensor(char_inputs).to(device),
+                   'next_token_ids': torch.LongTensor(targets).to(device)}
 
 
 def get_batch_classification(sentences, batch_size, num_steps, max_word_length):

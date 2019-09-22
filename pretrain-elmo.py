@@ -30,8 +30,10 @@ def main():
 
     lm = LanguageModel(vocab)
 
+    device = 'cpu'
     if args.gpu > -1 and torch.cuda.is_available():
-        lm = lm.to('cuda')
+        device = 'cuda:%d' % args.gpu
+    lm = lm.to(device)
 
     optimizer = optim.Adagrad(lm.parameters(), lr=args.lr)
 
@@ -44,7 +46,8 @@ def main():
         for batch in data.get_batch(test_data,
                                     args.batch_size,
                                     args.num_steps,
-                                    args.max_word_length):
+                                    args.max_word_length,
+                                    device):
             
             optimizer.zero_grad()
             loss = lm.forward_loss(batch['token_characters'], batch['next_token_ids'])
@@ -58,7 +61,8 @@ def main():
         for batch in data.get_batch(train_sentences,
                                     args.batch_size,
                                     args.num_steps,
-                                    args.max_word_length):
+                                    args.max_word_length,
+                                    device):
 
             optimizer.zero_grad()
             loss = lm.forward_loss(batch['token_characters'], batch['next_token_ids'])
