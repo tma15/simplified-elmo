@@ -117,6 +117,7 @@ class ElmoCharacterEncoder(torch.nn.Module):
                     kernel_size=width,
                     bias=True
             )
+            self.add_module('conv%d' % i, conv)
             convolutions.append(conv)
         self._convolutions = convolutions
 
@@ -135,7 +136,8 @@ class ElmoCharacterEncoder(torch.nn.Module):
         character_embedding = torch.transpose(character_embedding, 1, 2)
         convs = []
         for i in range(len(self._convolutions)):
-            conv = self._convolutions[i]
+#             conv = self._convolutions[i]
+            conv = getattr(self, 'conv%d' % i)
             convolved = conv(character_embedding)
             convolved, _ = torch.max(convolved, dim=-1)
             convolved = torch.nn.functional.relu(convolved)
