@@ -91,9 +91,9 @@ def get_batch(sentences, batch_size, num_steps, max_word_length, device):
 
                 targets[i, tok_pos] = sentences_t[i][0][tok_pos + 1]
 
-            yield {'token_ids': torch.LongTensor(inputs).to(device),
-                   'token_characters': torch.LongTensor(char_inputs).to(device),
-                   'next_token_ids': torch.LongTensor(targets).to(device)}
+        yield {'token_ids': torch.LongTensor(inputs).to(device),
+               'token_characters': torch.LongTensor(char_inputs).to(device),
+               'next_token_ids': torch.LongTensor(targets).to(device)}
 
 
 def get_batch_classification(sentences, batch_size, num_steps, max_word_length):
@@ -130,7 +130,7 @@ def get_batch_classification(sentences, batch_size, num_steps, max_word_length):
 
                 targets[i] = sentences_t[i][2]
 
-            yield {'token_ids': torch.LongTensor(inputs),
-                   'token_characters': torch.LongTensor(char_inputs),
-                   'label_ids': torch.LongTensor(targets)}
+        yield {'token_ids': torch.LongTensor(inputs),
+               'token_characters': torch.LongTensor(char_inputs),
+               'label_ids': torch.LongTensor(targets)}
 
