@@ -1,4 +1,5 @@
 import csv
+import random
 
 import numpy as np
 import torch
@@ -24,8 +25,8 @@ def convert_data(input_file, vocab, char_vocab, update_vocab):
                 char_ids_list.append(char_ids)
 
             processed_data.append((token_ids, char_ids_list))
-            if len(processed_data) >= 300:
-                break
+#             if len(processedn_data) >= 30000:
+#                 break
     return processed_data
 
 
@@ -52,21 +53,25 @@ def convert_ag_news_csv(input_file, vocab, char_vocab, update_vocab):
                 char_ids_list.append(char_ids)
 
             processed_data.append((token_ids, char_ids_list, label))
-            if len(processed_data) >= 300:
+            if len(processed_data) >= 30000:
                 break
     return processed_data
 
 
-def get_batch(sentences, batch_size, num_steps, max_word_length, device):
+def get_batch(sentences, batch_size, num_steps, max_word_length, device, shuffle=False):
 
     n_batches = int(len(sentences) / batch_size)
+
+    indices = [i for i in range(len(sentences))]
+    if shuffle:
+        random.shuffle(indices)
 
     for batch_no in range(n_batches):
         start = batch_size * batch_no
         end = min(batch_size * (batch_no + 1), len(sentences))
         batch_size_t = end - start
 
-        sentences_t = sentences[start: end]
+        sentences_t = [sentences[i] for i in indices[start: end]]
 
         if num_steps is None:
             max_sentence_length = max([len(s[0]) for s in sentences_t])
